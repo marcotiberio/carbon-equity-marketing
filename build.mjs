@@ -76,7 +76,7 @@ function gallery(content, sizes) {
   p.lead{margin:0 0 28px;color:#6b5566;font-size:14px}
   .grid{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start}
   .unit h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#6b5566;margin:0 0 8px;display:flex;align-items:center;gap:10px}
-  .dl{text-transform:none;letter-spacing:0;font-weight:700;color:#fff;background:#e88d89;border-radius:5px;padding:2px 8px;text-decoration:none}
+  .dl{text-transform:none;letter-spacing:0;font-weight:500;color:#fff;background:#e88d89;border-radius:5px;padding:2px 8px;text-decoration:none}
   .frame{border:0;display:block;box-shadow:0 6px 20px rgba(46,15,43,.15);border-radius:4px}
 </style>
 </head>

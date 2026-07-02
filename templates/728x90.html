@@ -10,8 +10,6 @@
 <style>
   @font-face{font-family:'Denim';font-style:normal;font-weight:500;font-display:block;
     src:url('fonts/DenimINKWD-Medium.subset.woff2') format('woff2')}
-  @font-face{font-family:'Denim';font-style:normal;font-weight:700;font-display:block;
-    src:url('fonts/DenimINKWD-Bold.subset.woff2') format('woff2')}
   :root{
     --plum:#491944; --plum-deep:#2e0f2b; --ink:#FBFCFC;
     --green:#7ae1ab; --yellow:#ffcf72; --pink:#f39a98;
@@ -19,82 +17,70 @@
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{width:728px;height:90px;overflow:hidden}
+  /* opaque plate: fills the full rect for GDN, pill floats on top with padding */
+  body{background:var(--ink);display:flex;align-items:center;justify-content:center;padding:6px}
   .banner{
-    position:relative;display:flex;align-items:center;
-    width:728px;height:90px;
+    position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px;
+    width:100%;height:100%;padding:0 16px 0 40px;border-radius:39px;
     background:radial-gradient(120% 180% at 100% 0%,var(--plum) 0%,var(--plum-deep) 100%);
-    border:1px solid rgba(251,252,252,.18);
     font-family:var(--font);color:var(--ink);text-decoration:none;
+    box-shadow:0 3px 14px rgba(20,7,18,.22);
     overflow:hidden;cursor:pointer;
   }
 
-  .content{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;width:100%;padding:0 22px}
-  .left{display:flex;flex-direction:column;gap:8px;max-width:440px}
-  .logo{height:22px;width:auto;opacity:0;animation:rise .5s .1s ease forwards}
-  .logo svg{height:22px;width:auto;display:block}
-
-  /* headline slider: slides stack absolutely, one visible at a time */
-  .slider{position:relative;height:24px;width:100%}
+  .copy{position:relative;z-index:2;flex:1 1 auto;min-width:0;height:60px}
+  /* each message stacks in the same spot and crossfades */
   .slide{
-    position:absolute;left:0;top:0;width:100%;
-    font-size:19px;line-height:1.15;font-weight:600;letter-spacing:-.01em;
-    white-space:nowrap;
-    opacity:0;transform:translateY(6px);
-    transition:opacity .45s ease,transform .45s ease;
+    position:absolute;left:0;top:50%;transform:translateY(-50%);
+    display:flex;flex-direction:column;gap:6px;
+    opacity:0;animation:cycle 9s infinite;
   }
-  .slide.is-active{opacity:1;transform:translateY(0)}
-  .slide .accent{color:var(--green)}
-
-  .cta{
-    flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;
-    background:var(--green);color:var(--plum-deep);
-    font-weight:700;font-size:15px;letter-spacing:-.01em;
-    padding:12px 20px;border-radius:999px;white-space:nowrap;
-    opacity:0;animation:rise .5s .46s ease forwards;
+  .slide:nth-child(1){animation-delay:0s}
+  .slide:nth-child(2){animation-delay:3s}
+  .slide:nth-child(3){animation-delay:6s}
+  .eyebrow{
+    font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink);opacity:.7;line-height:1;white-space:nowrap;
   }
-  .cta::after{content:"→";font-weight:700;transition:transform .2s}
-  .banner:hover .cta::after{transform:translateX(3px)}
-  .banner:hover .cta{filter:brightness(1.05)}
+  .headline{
+    font-size:30px;line-height:1;font-weight:500;letter-spacing:-.01em;white-space:nowrap;
+  }
 
+  /* ── Carbon Equity wordmark ── */
+  .logo{
+    position:relative;z-index:2;flex:0 0 auto;padding-right:14px;
+    opacity:0;animation:rise .5s .34s ease forwards;
+  }
+  .logo svg{display:block;height:30px;width:auto}
   @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  /* fade in → hold → fade out, sized to a 3-slide / 9s loop */
+  @keyframes cycle{
+    0%   {opacity:0;transform:translateY(-50%) translateY(5px)}
+    4%   {opacity:1;transform:translateY(-50%)}
+    28%  {opacity:1;transform:translateY(-50%)}
+    33%  {opacity:0;transform:translateY(-50%) translateY(-5px)}
+    100% {opacity:0;transform:translateY(-50%) translateY(5px)}
+  }
 </style>
 </head>
 <body>
 <a class="banner" href="https://www.carbonequity.com/" target="_blank" rel="noopener"
    onclick="window.open(window.clickTag,'_blank');return false;">
-
-  <div class="content">
-    <div class="left">
-      <span class="logo">{{LOGO_LIGHT}}</span>
-
-      <div class="slider" id="slider">
-        <span class="slide is-active"><span data-ce="slides.0.0"></span><span class="accent" data-ce="slides.0.1"></span></span>
-        <span class="slide"><span data-ce="slides.1.0"></span><span class="accent" data-ce="slides.1.1"></span></span>
-        <span class="slide"><span data-ce="slides.2.0"></span><span class="accent" data-ce="slides.2.1"></span></span>
-      </div>
-    </div>
-
-    <span class="cta" data-ce="cta"></span>
-  </div>
+  <span class="copy">
+    <span class="slide">
+      <span class="eyebrow" data-ce="slides.0.0"></span>
+      <span class="headline" data-ce="slides.0.1"></span>
+    </span>
+    <span class="slide">
+      <span class="eyebrow" data-ce="slides.1.0"></span>
+      <span class="headline" data-ce="slides.1.1"></span>
+    </span>
+    <span class="slide">
+      <span class="eyebrow" data-ce="slides.2.0"></span>
+      <span class="headline" data-ce="slides.2.1"></span>
+    </span>
+  </span>
+  <span class="logo">{{LOGO_LIGHT}}</span>
 </a>
-
-<script>
-(function () {
-  var slides = document.querySelectorAll('#slider .slide');
-  var DUR = 2600;                        // ms each headline stays on screen
-  var LOOPS = 3;                         // full passes through the set
-  var total = slides.length * LOOPS;     // total headline displays before stop
-  var shown = 1;                         // first slide is already active
-  var i = 0;
-
-  var timer = setInterval(function () {
-    if (shown >= total) { clearInterval(timer); return; }   // GDN: animation must stop
-    slides[i].classList.remove('is-active');
-    i = (i + 1) % slides.length;
-    slides[i].classList.add('is-active');
-    shown++;
-  }, DUR);
-})();
-</script>
 </body>
 </html>

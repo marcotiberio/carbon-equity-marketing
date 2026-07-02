@@ -10,8 +10,6 @@
 <style>
   @font-face{font-family:'Denim';font-style:normal;font-weight:500;font-display:block;
     src:url('fonts/DenimINKWD-Medium.subset.woff2') format('woff2')}
-  @font-face{font-family:'Denim';font-style:normal;font-weight:700;font-display:block;
-    src:url('fonts/DenimINKWD-Bold.subset.woff2') format('woff2')}
   :root{
     --plum:#491944; --plum-deep:#2e0f2b; --ink:#FBFCFC;
     --green:#7ae1ab; --yellow:#ffcf72; --pink:#f39a98;
@@ -19,11 +17,14 @@
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{width:320px;height:50px;overflow:hidden}
+  /* opaque plate: fills the full rect for GDN, pill floats on top with padding */
+  body{background:var(--ink);display:flex;align-items:center;justify-content:center;padding:4px}
   .banner{
     position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;
-    width:320px;height:50px;padding:0 5px 0 22px;border-radius:25px;
+    width:100%;height:100%;padding:0 5px 0 20px;border-radius:21px;
     background:radial-gradient(150% 240% at 100% 0%,var(--plum) 0%,var(--plum-deep) 100%);
     font-family:var(--font);color:var(--ink);text-decoration:none;
+    box-shadow:0 2px 8px rgba(20,7,18,.22);
     overflow:hidden;cursor:pointer;
   }
 
@@ -38,24 +39,19 @@
   .slide:nth-child(2){animation-delay:3s}
   .slide:nth-child(3){animation-delay:6s}
   .eyebrow{
-    font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    font-size:8px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
     color:var(--ink);opacity:.7;line-height:1;white-space:nowrap;
   }
   .headline{
-    font-size:15px;line-height:1;font-weight:600;letter-spacing:-.01em;white-space:nowrap;
+    font-size:15px;line-height:1;font-weight:500;letter-spacing:-.01em;white-space:nowrap;
   }
 
-  /* ── advisor avatar — swap .avatar background for the real photo ── */
-  .avatar{
-    position:relative;z-index:2;flex:0 0 auto;
-    width:40px;height:40px;border-radius:50%;overflow:hidden;
-    background:
-      radial-gradient(circle at 46% 30%,#f6d7bf 0%,#e7b48f 34%,#b98a63 60%,#6f7b52 100%),
-      radial-gradient(circle at 78% 82%,rgba(122,225,171,.5),transparent 52%);
-    background-blend-mode:screen;
-    box-shadow:inset 0 0 0 1px rgba(251,252,252,.18);
+  /* ── Carbon Equity wordmark ── */
+  .logo{
+    position:relative;z-index:2;flex:0 0 auto;padding-right:8px;
     opacity:0;animation:rise .5s .34s ease forwards;
   }
+  .logo svg{display:block;height:20px;width:auto}
   @keyframes rise{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
   /* fade in → hold → fade out, sized to a 3-slide / 9s loop */
   @keyframes cycle{
@@ -84,7 +80,7 @@
       <span class="headline" data-ce="slides.2.1"></span>
     </span>
   </span>
-  <span class="avatar" role="img" aria-label="Carbon Equity advisor"></span>
+  <span class="logo">{{LOGO_LIGHT}}</span>
 </a>
 </body>
 </html>
