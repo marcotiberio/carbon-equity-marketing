@@ -33,15 +33,25 @@ and the previews update instantly. **Save** writes straight back to
 Only text is editable: layout, fonts, colours and animation are locked in the
 templates, so editing copy can never break a design.
 
+Each preview has a **↓ zip** button, and the header has **Download all zips** —
+these build upload-ready `<size>.zip` files (HTML + fonts + images) **in the
+browser from your current edits**, so a marketer can go from copy tweak to a zip
+ready for Google Ads without any local setup or commit.
+
 ## Building upload-ready creatives
 
 ```bash
-npm run build     # -> dist/<size>/index.html + only the assets each one uses
-npm run zip       # -> dist/<size>.zip, ready to upload to Google Ads
+npm run build     # -> dist/<size>/ folders, dist/<size>.zip, and a preview gallery
 ```
 
-Each `dist/<size>/` folder (or `.zip`) is fully self-contained — no runtime
-fetches — as GDN requires. `dist/index.html` is a preview gallery.
+Each `dist/<size>.zip` bundles `index.html` at the root plus only the fonts and
+images that creative references — fully self-contained, no runtime fetches, as
+GDN requires. `dist/carbon-equity-banners.zip` is all five in one download and
+`dist/index.html` is a preview gallery with per-banner zip links.
+
+Zips are produced by a tiny built-in ZIP writer (`zip.mjs`) — no external
+dependencies or `zip` binary needed, and the same code powers the editor's
+in-browser downloads.
 
 ## How it works
 
@@ -49,7 +59,8 @@ fetches — as GDN requires. `dist/index.html` is a preview gallery.
 content.json      one source of truth — text only
 templates/*.html  the 5 banners; copy nodes marked data-ce="…", logo tokenised
 render.mjs        template + copy -> final HTML (shared by build AND editor)
-build.mjs         writes dist/ creatives, copies each banner's assets
+zip.mjs           dependency-free ZIP writer (shared by build AND editor)
+build.mjs         writes dist/ creatives + per-size zips + gallery
 server.mjs        zero-dep dev server + saves content.json (npm run dev)
 editor/           the live visual copy editor
 assets/           fonts, hero image, contour lines (shared source)

@@ -24,6 +24,7 @@ const TYPES = {
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.woff2': 'font/woff2',
+  '.zip': 'application/zip',
 };
 
 const server = createServer(async (req, res) => {

@@ -6,8 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
-    "build": "node build.mjs",
-    "zip": "node build.mjs && node zip.mjs"
+    "build": "node build.mjs"
   },
   "engines": {
     "node": ">=18"

@@ -57,7 +57,8 @@
   .sub{margin:0 0 4px;font-size:11px;font-weight:700;color:var(--plum)}
   .row2{display:grid;grid-template-columns:1fr;gap:6px;padding:8px 10px;border:1px dashed var(--line);border-radius:8px;margin:0 0 10px}
 
-  .card h2{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+  .card h2{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;display:flex;align-items:center;gap:10px}
+  .card .dl{padding:3px 9px;font-size:11px;letter-spacing:0;text-transform:none;border-radius:6px}
   .card iframe{border:0;display:block;box-shadow:0 6px 20px rgba(46,15,43,.15);border-radius:4px;background:#fff}
   .hint{padding:20px;color:var(--muted);font-size:13px;line-height:1.5}
 </style>
@@ -71,7 +72,8 @@
   <div class="spacer"></div>
   <span id="status"></span>
   <button id="save">Save</button>
-  <button id="download" class="ghost">Download JSON</button>
+  <button id="downloadZips">Download all zips</button>
+  <button id="download" class="ghost">JSON</button>
 </header>
 
 <div class="layout">
@@ -81,6 +83,7 @@
 
 <script type="module">
 import { render } from '../render.mjs';
+import { makeZip, referencedAssets } from '../zip.mjs';
 
 const BASE = '../';            // repo root relative to /editor/
 const ASSET_BASE = '../assets/';
@@ -187,7 +190,9 @@ function buildPreviews(sizes) {
     const [w, h] = size.split('x').map(Number);
     const card = document.createElement('div');
     card.className = 'card';
-    card.innerHTML = `<h2>${size} · ${content.banners[size].label || ''}</h2>`;
+    card.innerHTML = `<h2>${size} · ${content.banners[size].label || ''}
+      <button class="dl" data-size="${size}">↓ zip</button></h2>`;
+    card.querySelector('.dl').addEventListener('click', () => downloadZip(size));
     const f = document.createElement('iframe');
     f.width = w;
     f.height = h;
@@ -210,6 +215,59 @@ function schedule(size) {
   clearTimeout(timers[size]);
   timers[size] = setTimeout(() => renderPreview(size), 250);
   setStatus('Unsaved changes', false);
+}
+
+// ---- zip download (client-side, reflects current edits) -------------------
+const assetCache = {}; // rel -> Uint8Array
+
+async function fetchAsset(rel) {
+  if (!assetCache[rel]) {
+    const buf = await (await fetch(ASSET_BASE + rel, { cache: 'force-cache' })).arrayBuffer();
+    assetCache[rel] = new Uint8Array(buf);
+  }
+  return assetCache[rel];
+}
+
+// Build one creative's upload-ready zip. No baseHref: assets sit next to
+// index.html inside the zip, exactly like the production build.
+async function creativeFiles(size) {
+  const html = render(templates[size], content.banners[size].fields, {
+    clickUrl: content.clickUrl,
+  });
+  const files = [{ name: 'index.html', data: new TextEncoder().encode(html) }];
+  for (const rel of referencedAssets(html)) {
+    files.push({ name: rel, data: await fetchAsset(rel) });
+  }
+  return files;
+}
+
+async function downloadZip(size) {
+  setStatus(`Zipping ${size}…`);
+  const zip = makeZip(await creativeFiles(size));
+  saveBlob(new Blob([zip], { type: 'application/zip' }), `${size}.zip`);
+  setStatus(`Downloaded ${size}.zip ✓`);
+}
+
+async function downloadAllZips() {
+  setStatus('Zipping all…');
+  const bundle = [];
+  for (const size of Object.keys(content.banners)) {
+    for (const f of await creativeFiles(size)) {
+      bundle.push({ name: `${size}/${f.name}`, data: f.data });
+    }
+  }
+  const zip = makeZip(bundle);
+  saveBlob(new Blob([zip], { type: 'application/zip' }), 'carbon-equity-banners.zip');
+  setStatus('Downloaded carbon-equity-banners.zip ✓');
+}
+
+function saveBlob(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ---- helpers --------------------------------------------------------------
@@ -241,6 +299,8 @@ $('#save').addEventListener('click', async () => {
     setStatus('Downloaded content.json (commit it to publish)');
   }
 });
+
+$('#downloadZips').addEventListener('click', downloadAllZips);
 
 $('#download').addEventListener('click', () =>
   downloadJSON(JSON.stringify(content, null, 2) + '\n')
