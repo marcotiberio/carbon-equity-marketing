@@ -1,0 +1,61 @@
+{
+  "clickUrl": "https://www.carbonequity.com/",
+  "banners": {
+    "300x600": {
+      "label": "Half page",
+      "lang": "nl",
+      "fields": {
+        "paragraphs": [
+          "Kapitaal stroomt naar wat werkt.<br>Wat werkt, groeit.",
+          "Batterijen zijn de nieuwe gasreserves.<br>Aardwarmte is de nieuwe olie.",
+          "Transities draaien niet langer op overtuiging,<br>maar op rendement.",
+          "Investeer in de nieuwe economie."
+        ],
+        "headline": ["Make", "Good", "Money"]
+      }
+    },
+    "160x600": {
+      "label": "Skyscraper",
+      "lang": "nl",
+      "fields": {
+        "paragraphs": [
+          "Kapitaal stroomt naar wat werkt. Wat werkt, groeit.",
+          "Batterijen zijn de nieuwe gasreserves. Aardwarmte is de nieuwe olie.",
+          "Transities draaien niet langer op overtuiging, maar op rendement.",
+          "Investeer in de nieuwe economie."
+        ],
+        "headline": ["Make", "Good", "Money"]
+      }
+    },
+    "320x100": {
+      "label": "Large mobile banner",
+      "lang": "en",
+      "fields": {
+        "headline": ["Make", "Good", "Money"]
+      }
+    },
+    "728x90": {
+      "label": "Leaderboard",
+      "lang": "en",
+      "fields": {
+        "slides": [
+          ["Invest in the ", "climate transition"],
+          ["Fund the shift to ", "clean energy"],
+          ["Build your ", "impact portfolio"]
+        ],
+        "cta": "Start investing"
+      }
+    },
+    "320x50": {
+      "label": "Mobile leaderboard",
+      "lang": "en",
+      "fields": {
+        "slides": [
+          ["Questions?", "Happy to walk you through"],
+          ["New to impact investing?", "We'll help you get started"],
+          ["Not sure where to start?", "Book a free intro call"]
+        ]
+      }
+    }
+  }
+}

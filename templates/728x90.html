@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="ad.size" content="width=728,height=90">
+<title>Carbon Equity — 728x90</title>
+<script>var clickTag = "https://www.carbonequity.com/";</script>
+<script>window.CE = __CE_DATA__;</script>
+<style>
+  @font-face{font-family:'Denim';font-style:normal;font-weight:500;font-display:block;
+    src:url('fonts/DenimINKWD-Medium.subset.woff2') format('woff2')}
+  @font-face{font-family:'Denim';font-style:normal;font-weight:700;font-display:block;
+    src:url('fonts/DenimINKWD-Bold.subset.woff2') format('woff2')}
+  :root{
+    --plum:#491944; --plum-deep:#2e0f2b; --ink:#FBFCFC;
+    --green:#7ae1ab; --yellow:#ffcf72; --pink:#f39a98;
+    --font:'Denim',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:728px;height:90px;overflow:hidden}
+  .banner{
+    position:relative;display:flex;align-items:center;
+    width:728px;height:90px;
+    background:radial-gradient(120% 180% at 100% 0%,var(--plum) 0%,var(--plum-deep) 100%);
+    border:1px solid rgba(251,252,252,.18);
+    font-family:var(--font);color:var(--ink);text-decoration:none;
+    overflow:hidden;cursor:pointer;
+  }
+
+  .content{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;width:100%;padding:0 22px}
+  .left{display:flex;flex-direction:column;gap:8px;max-width:440px}
+  .logo{height:22px;width:auto;opacity:0;animation:rise .5s .1s ease forwards}
+  .logo svg{height:22px;width:auto;display:block}
+
+  /* headline slider: slides stack absolutely, one visible at a time */
+  .slider{position:relative;height:24px;width:100%}
+  .slide{
+    position:absolute;left:0;top:0;width:100%;
+    font-size:19px;line-height:1.15;font-weight:600;letter-spacing:-.01em;
+    white-space:nowrap;
+    opacity:0;transform:translateY(6px);
+    transition:opacity .45s ease,transform .45s ease;
+  }
+  .slide.is-active{opacity:1;transform:translateY(0)}
+  .slide .accent{color:var(--green)}
+
+  .cta{
+    flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;
+    background:var(--green);color:var(--plum-deep);
+    font-weight:700;font-size:15px;letter-spacing:-.01em;
+    padding:12px 20px;border-radius:999px;white-space:nowrap;
+    opacity:0;animation:rise .5s .46s ease forwards;
+  }
+  .cta::after{content:"→";font-weight:700;transition:transform .2s}
+  .banner:hover .cta::after{transform:translateX(3px)}
+  .banner:hover .cta{filter:brightness(1.05)}
+
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<a class="banner" href="https://www.carbonequity.com/" target="_blank" rel="noopener"
+   onclick="window.open(window.clickTag,'_blank');return false;">
+
+  <div class="content">
+    <div class="left">
+      <span class="logo">{{LOGO_LIGHT}}</span>
+
+      <div class="slider" id="slider">
+        <span class="slide is-active"><span data-ce="slides.0.0"></span><span class="accent" data-ce="slides.0.1"></span></span>
+        <span class="slide"><span data-ce="slides.1.0"></span><span class="accent" data-ce="slides.1.1"></span></span>
+        <span class="slide"><span data-ce="slides.2.0"></span><span class="accent" data-ce="slides.2.1"></span></span>
+      </div>
+    </div>
+
+    <span class="cta" data-ce="cta"></span>
+  </div>
+</a>
+
+<script>
+(function () {
+  var slides = document.querySelectorAll('#slider .slide');
+  var DUR = 2600;                        // ms each headline stays on screen
+  var LOOPS = 3;                         // full passes through the set
+  var total = slides.length * LOOPS;     // total headline displays before stop
+  var shown = 1;                         // first slide is already active
+  var i = 0;
+
+  var timer = setInterval(function () {
+    if (shown >= total) { clearInterval(timer); return; }   // GDN: animation must stop
+    slides[i].classList.remove('is-active');
+    i = (i + 1) % slides.length;
+    slides[i].classList.add('is-active');
+    shown++;
+  }, DUR);
+})();
+</script>
+</body>
+</html>

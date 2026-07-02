@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Carbon Equity — Banner Copy Editor</title>
+<style>
+  :root{
+    --plum-deep:#2e0f2b; --plum:#491944; --pink:#e88d89;
+    --paper:#ffffff; --bg:#f3f2f4; --line:#e3dee1; --muted:#6b5566;
+    --font:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--font);color:var(--plum-deep);background:var(--bg)}
+
+  header{
+    position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:16px;
+    padding:14px 22px;background:var(--plum-deep);color:#fff;
+  }
+  header h1{font-size:15px;margin:0;font-weight:700;letter-spacing:.01em}
+  header .spacer{flex:1}
+  header .url{display:flex;align-items:center;gap:8px;font-size:12px;color:#e8dfe6}
+  header .url input{
+    width:260px;padding:6px 9px;border:1px solid rgba(255,255,255,.2);border-radius:6px;
+    background:rgba(255,255,255,.08);color:#fff;font:inherit;font-size:12px;
+  }
+  button{
+    font:inherit;font-weight:700;font-size:13px;cursor:pointer;border:0;border-radius:8px;
+    padding:9px 16px;background:var(--pink);color:var(--plum-deep);
+  }
+  button:disabled{opacity:.5;cursor:default}
+  button.ghost{background:rgba(255,255,255,.12);color:#fff}
+  #status{font-size:12px;color:#cbb9c6;min-width:120px}
+
+  .layout{display:grid;grid-template-columns:400px 1fr;height:calc(100vh - 57px)}
+  .panel{overflow-y:auto;border-right:1px solid var(--line);background:var(--paper)}
+  .previews{overflow-y:auto;padding:28px;display:flex;flex-wrap:wrap;gap:34px;align-content:flex-start}
+
+  .group{border-bottom:1px solid var(--line)}
+  .group>summary{
+    list-style:none;cursor:pointer;padding:14px 20px;font-weight:700;font-size:13px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .group>summary::-webkit-details-marker{display:none}
+  .group>summary .dim{color:var(--muted);font-weight:500}
+  .group>summary::before{content:"▸";color:var(--muted);font-size:11px}
+  .group[open]>summary::before{content:"▾"}
+  .fields{padding:2px 20px 18px}
+
+  .field{margin:0 0 12px}
+  .field label{display:block;font-size:11px;color:var(--muted);margin:0 0 4px;font-weight:600}
+  .field input,.field textarea{
+    width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;
+    font:inherit;font-size:13px;color:var(--plum-deep);background:#fff;resize:vertical;
+  }
+  .field input:focus,.field textarea:focus{outline:2px solid var(--pink);border-color:transparent}
+  .sub{margin:0 0 4px;font-size:11px;font-weight:700;color:var(--plum)}
+  .row2{display:grid;grid-template-columns:1fr;gap:6px;padding:8px 10px;border:1px dashed var(--line);border-radius:8px;margin:0 0 10px}
+
+  .card h2{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+  .card iframe{border:0;display:block;box-shadow:0 6px 20px rgba(46,15,43,.15);border-radius:4px;background:#fff}
+  .hint{padding:20px;color:var(--muted);font-size:13px;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+  <h1>Carbon Equity · Banner Copy</h1>
+  <label class="url">Click URL
+    <input id="clickUrl" type="url" placeholder="https://…">
+  </label>
+  <div class="spacer"></div>
+  <span id="status"></span>
+  <button id="save">Save</button>
+  <button id="download" class="ghost">Download JSON</button>
+</header>
+
+<div class="layout">
+  <div class="panel" id="panel"><div class="hint">Loading…</div></div>
+  <div class="previews" id="previews"></div>
+</div>
+
+<script type="module">
+import { render } from '../render.mjs';
+
+const BASE = '../';            // repo root relative to /editor/
+const ASSET_BASE = '../assets/';
+let content = null;
+const templates = {};         // size -> raw template html
+const iframes = {};           // size -> iframe element
+const timers = {};            // size -> debounce timer
+
+const $ = (s, r = document) => r.querySelector(s);
+const status = $('#status');
+
+function setStatus(msg, ok = true) {
+  status.textContent = msg;
+  status.style.color = ok ? '#9be6bf' : '#f3a9a5';
+}
+
+async function boot() {
+  content = await (await fetch(BASE + 'content.json', { cache: 'no-store' })).json();
+  const sizes = Object.keys(content.banners);
+  await Promise.all(
+    sizes.map(async (s) => {
+      templates[s] = await (await fetch(`${BASE}templates/${s}.html`, { cache: 'no-store' })).text();
+    })
+  );
+  $('#clickUrl').value = content.clickUrl || '';
+  buildPanel(sizes);
+  buildPreviews(sizes);
+  sizes.forEach(renderPreview);
+  setStatus('Loaded');
+}
+
+// ---- form panel -----------------------------------------------------------
+function buildPanel(sizes) {
+  const panel = $('#panel');
+  panel.innerHTML = '';
+  sizes.forEach((size, idx) => {
+    const b = content.banners[size];
+    const g = document.createElement('details');
+    g.className = 'group';
+    if (idx === 0) g.open = true;
+    g.innerHTML = `<summary>${size} <span class="dim">· ${b.label || ''}</span></summary>`;
+    const fields = document.createElement('div');
+    fields.className = 'fields';
+    for (const key of Object.keys(b.fields)) {
+      fields.appendChild(fieldGroup(size, key, b.fields[key], [key]));
+    }
+    g.appendChild(fields);
+    panel.appendChild(g);
+  });
+}
+
+// Renders any field shape: strings -> control, arrays -> ordered items,
+// arrays-of-arrays (slides) -> grouped multi-line blocks.
+function fieldGroup(size, key, value, path) {
+  const wrap = document.createElement('div');
+  const title = document.createElement('div');
+  title.className = 'sub';
+  title.textContent = labelFor(key);
+  wrap.appendChild(title);
+
+  if (Array.isArray(value)) {
+    value.forEach((item, i) => {
+      if (Array.isArray(item)) {
+        const block = document.createElement('div');
+        block.className = 'row2';
+        item.forEach((v, j) => block.appendChild(control(size, [...path, i, j], `Line ${j + 1}`, v)));
+        wrap.appendChild(block);
+      } else {
+        wrap.appendChild(control(size, [...path, i], `${i + 1}`, item));
+      }
+    });
+  } else {
+    wrap.appendChild(control(size, path, labelFor(key), value));
+  }
+  return wrap;
+}
+
+function control(size, path, label, value) {
+  const f = document.createElement('div');
+  f.className = 'field';
+  const long = String(value).length > 40 || String(value).includes('<br>');
+  f.innerHTML = `<label>${label}</label>`;
+  const el = document.createElement(long ? 'textarea' : 'input');
+  if (long) el.rows = 2;
+  el.value = value;
+  el.addEventListener('input', () => {
+    setByPath(content.banners[size].fields, path, el.value);
+    schedule(size);
+  });
+  f.appendChild(el);
+  return f;
+}
+
+function labelFor(key) {
+  const map = { paragraphs: 'Paragraphs', headline: 'Headline (per line)', slides: 'Rotating slides', cta: 'Button' };
+  return map[key] || key;
+}
+
+// ---- previews -------------------------------------------------------------
+function buildPreviews(sizes) {
+  const host = $('#previews');
+  host.innerHTML = '';
+  sizes.forEach((size) => {
+    const [w, h] = size.split('x').map(Number);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<h2>${size} · ${content.banners[size].label || ''}</h2>`;
+    const f = document.createElement('iframe');
+    f.width = w;
+    f.height = h;
+    f.setAttribute('scrolling', 'no');
+    card.appendChild(f);
+    host.appendChild(card);
+    iframes[size] = f;
+  });
+}
+
+function renderPreview(size) {
+  const html = render(templates[size], content.banners[size].fields, {
+    clickUrl: content.clickUrl,
+    baseHref: ASSET_BASE,
+  });
+  iframes[size].srcdoc = html;
+}
+
+function schedule(size) {
+  clearTimeout(timers[size]);
+  timers[size] = setTimeout(() => renderPreview(size), 250);
+  setStatus('Unsaved changes', false);
+}
+
+// ---- helpers --------------------------------------------------------------
+function setByPath(obj, path, val) {
+  let o = obj;
+  for (let i = 0; i < path.length - 1; i++) o = o[path[i]];
+  o[path[path.length - 1]] = val;
+}
+
+// ---- global controls ------------------------------------------------------
+$('#clickUrl').addEventListener('input', (e) => {
+  content.clickUrl = e.target.value;
+  Object.keys(content.banners).forEach(schedule);
+});
+
+$('#save').addEventListener('click', async () => {
+  const body = JSON.stringify(content, null, 2) + '\n';
+  try {
+    const r = await fetch(BASE + 'content.json', {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body,
+    });
+    if (!r.ok) throw new Error('server said ' + r.status);
+    setStatus('Saved to content.json ✓');
+  } catch (err) {
+    // No write backend (e.g. GitHub Pages) — fall back to a download.
+    downloadJSON(body);
+    setStatus('Downloaded content.json (commit it to publish)');
+  }
+});
+
+$('#download').addEventListener('click', () =>
+  downloadJSON(JSON.stringify(content, null, 2) + '\n')
+);
+
+function downloadJSON(body) {
+  const url = URL.createObjectURL(new Blob([body], { type: 'application/json' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'content.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+boot().catch((e) => {
+  $('#panel').innerHTML = `<div class="hint">Failed to load: ${e.message}<br><br>Run <b>npm run dev</b> and open the printed URL (fetch needs http, not file://).</div>`;
+});
+</script>
+</body>
+</html>

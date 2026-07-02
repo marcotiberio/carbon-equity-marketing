@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="ad.size" content="width=160,height=600">
+  <title>Carbon Equity — 160x600</title>
+  <script>var clickTag = "https://www.carbonequity.com/";</script>
+  <script>window.CE = __CE_DATA__;</script>
+  <style>
+    @font-face {
+      font-family: 'Denim';
+      font-style: normal;
+      font-weight: 500;
+      font-display: block;
+      src: url('fonts/DenimINKWD-Medium.subset.woff2') format('woff2');
+    }
+    @font-face {
+      font-family: 'Denim';
+      font-style: normal;
+      font-weight: 700;
+      font-display: block;
+      src: url('fonts/DenimINKWD-Bold.subset.woff2') format('woff2');
+    }
+
+    :root {
+      --plum: #491944;
+      --plum-deep: #2e0f2b;
+      --ink: #2e0f2b;
+      --paper: #ffffff;
+      --pink: #f0a19d;
+      --pink-deep: #e88d89;
+      --font: 'Denim', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { width: 160px; height: 600px; overflow: hidden; }
+
+    .banner {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 160px;
+      height: 600px;
+      background: var(--paper);
+      font-family: var(--font);
+      font-weight: 500;
+      color: var(--ink);
+      text-decoration: none;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .hero {
+      position: relative;
+      height: 150px;
+      overflow: hidden;
+      background: var(--pink);
+      opacity: 0;
+      animation: fade .6s .05s ease forwards;
+    }
+
+    .hero__img {
+      position: absolute;
+      inset: 0;
+      background: url('hero.jpg') center / cover no-repeat;
+    }
+
+    .frame-lines {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 18px;
+      z-index: 5;
+      background: url('contour-lines.png') left center / cover no-repeat;
+      pointer-events: none;
+    }
+
+    .body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 14px 16px 30px;
+    }
+
+    .copy {
+      opacity: 0;
+      animation: rise .5s .28s ease forwards;
+    }
+
+    .copy p {
+      font-size: 10.5px;
+      line-height: 1.42;
+      margin-bottom: 9px;
+    }
+
+    .copy p:last-child { margin-bottom: 0; }
+
+    .copy .em { font-weight: 700; }
+
+    .headline {
+      margin-top: 16px;
+      font-weight: 700;
+      font-size: 27px;
+      line-height: .94;
+      letter-spacing: -.015em;
+      text-transform: uppercase;
+      color: var(--plum-deep);
+      opacity: 0;
+      animation: rise .55s .44s ease forwards;
+    }
+
+    .headline .pop { color: var(--pink-deep); }
+
+    .footer {
+      margin-top: auto;
+      padding-top: 14px;
+      opacity: 0;
+      animation: rise .5s .6s ease forwards;
+    }
+
+    .logo { flex: none; }
+    .logo svg { display: block; height: 22px; width: auto; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fade {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <a class="banner" href="https://www.carbonequity.com/" target="_blank" rel="noopener"
+     onclick="window.open(window.clickTag,'_blank');return false;">
+
+    <span class="frame-lines"></span>
+
+    <div class="hero">
+      <div class="hero__img"></div>
+    </div>
+
+    <div class="body">
+      <div class="copy">
+        <p data-ce="paragraphs.0"></p>
+        <p data-ce="paragraphs.1"></p>
+        <p data-ce="paragraphs.2"></p>
+        <p class="em" data-ce="paragraphs.3"></p>
+      </div>
+
+      <h1 class="headline"><span data-ce="headline.0"></span><br><span class="pop" data-ce="headline.1"></span><br><span data-ce="headline.2"></span></h1>
+
+      <div class="footer">
+        <span class="logo">{{LOGO_DARK}}</span>
+      </div>
+    </div>
+  </a>
+</body>
+</html>

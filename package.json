@@ -1,0 +1,15 @@
+{
+  "name": "carbon-equity-marketing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Carbon Equity display banners with a live copy editor",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "build": "node build.mjs",
+    "zip": "node build.mjs && node zip.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

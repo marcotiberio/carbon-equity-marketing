@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="ad.size" content="width=320,height=50">
+<title>Carbon Equity — 320x50</title>
+<script>var clickTag = "https://www.carbonequity.com/";</script>
+<script>window.CE = __CE_DATA__;</script>
+<style>
+  @font-face{font-family:'Denim';font-style:normal;font-weight:500;font-display:block;
+    src:url('fonts/DenimINKWD-Medium.subset.woff2') format('woff2')}
+  @font-face{font-family:'Denim';font-style:normal;font-weight:700;font-display:block;
+    src:url('fonts/DenimINKWD-Bold.subset.woff2') format('woff2')}
+  :root{
+    --plum:#491944; --plum-deep:#2e0f2b; --ink:#FBFCFC;
+    --green:#7ae1ab; --yellow:#ffcf72; --pink:#f39a98;
+    --font:'Denim',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:320px;height:50px;overflow:hidden}
+  .banner{
+    position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    width:320px;height:50px;padding:0 5px 0 22px;border-radius:25px;
+    background:radial-gradient(150% 240% at 100% 0%,var(--plum) 0%,var(--plum-deep) 100%);
+    font-family:var(--font);color:var(--ink);text-decoration:none;
+    overflow:hidden;cursor:pointer;
+  }
+
+  .copy{position:relative;z-index:2;flex:1 1 auto;min-width:0;height:34px}
+  /* each message stacks in the same spot and crossfades */
+  .slide{
+    position:absolute;left:0;top:50%;transform:translateY(-50%);
+    display:flex;flex-direction:column;gap:3px;
+    opacity:0;animation:cycle 9s infinite;
+  }
+  .slide:nth-child(1){animation-delay:0s}
+  .slide:nth-child(2){animation-delay:3s}
+  .slide:nth-child(3){animation-delay:6s}
+  .eyebrow{
+    font-size:8px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink);opacity:.7;line-height:1;white-space:nowrap;
+  }
+  .headline{
+    font-size:15px;line-height:1;font-weight:600;letter-spacing:-.01em;white-space:nowrap;
+  }
+
+  /* ── advisor avatar — swap .avatar background for the real photo ── */
+  .avatar{
+    position:relative;z-index:2;flex:0 0 auto;
+    width:40px;height:40px;border-radius:50%;overflow:hidden;
+    background:
+      radial-gradient(circle at 46% 30%,#f6d7bf 0%,#e7b48f 34%,#b98a63 60%,#6f7b52 100%),
+      radial-gradient(circle at 78% 82%,rgba(122,225,171,.5),transparent 52%);
+    background-blend-mode:screen;
+    box-shadow:inset 0 0 0 1px rgba(251,252,252,.18);
+    opacity:0;animation:rise .5s .34s ease forwards;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+  /* fade in → hold → fade out, sized to a 3-slide / 9s loop */
+  @keyframes cycle{
+    0%   {opacity:0;transform:translateY(-50%) translateY(4px)}
+    4%   {opacity:1;transform:translateY(-50%)}
+    28%  {opacity:1;transform:translateY(-50%)}
+    33%  {opacity:0;transform:translateY(-50%) translateY(-4px)}
+    100% {opacity:0;transform:translateY(-50%) translateY(4px)}
+  }
+</style>
+</head>
+<body>
+<a class="banner" href="https://www.carbonequity.com/" target="_blank" rel="noopener"
+   onclick="window.open(window.clickTag,'_blank');return false;">
+  <span class="copy">
+    <span class="slide">
+      <span class="eyebrow" data-ce="slides.0.0"></span>
+      <span class="headline" data-ce="slides.0.1"></span>
+    </span>
+    <span class="slide">
+      <span class="eyebrow" data-ce="slides.1.0"></span>
+      <span class="headline" data-ce="slides.1.1"></span>
+    </span>
+    <span class="slide">
+      <span class="eyebrow" data-ce="slides.2.0"></span>
+      <span class="headline" data-ce="slides.2.1"></span>
+    </span>
+  </span>
+  <span class="avatar" role="img" aria-label="Carbon Equity advisor"></span>
+</a>
+</body>
+</html>
